@@ -6,7 +6,7 @@ Parsing of Telegram job groups, structuring with ChatGPT and analysis
 
 - Parsing of Telegram groups using Telegram API
 - Structuring messages using OpenAI API
-- Web interface using FastAPI
+- Web interface using FastAPI and Jinja2
 - Analysis using ChartJS
 
 ## Install
