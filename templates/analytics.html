@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Analytics</title>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+        }
+
+        th {
+            background-color: lightgray;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+    </style>
+</head>
+<body>
+
+<a href="/">Vacancies</a>
+
+
+<h2>Analytics</h2>
+
+<h4>Offer types chart</h4>
+
+<div style="height: 600px;">
+<canvas id="offerChart"></canvas>
+<script>
+
+    var englishData = [
+        {level: 'available', count: {{ count_offer_type[0] }}},
+        {level: 'lookfor', count: {{ count_offer_type[1] }}}
+    ];
+
+    // Create a chart using Chart.js
+    var ctx = document.getElementById('offerChart').getContext('2d');
+    var chart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: englishData.map(data => data.level),
+            datasets: [{
+                label: 'Offer type',
+                data: englishData.map(data => data.count),
+                backgroundColor: ["#af94bc", "#bc94a4"],
+                borderColor: '#ffffff',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    precision: 0
+                }
+            }
+        }
+    });
+</script>
+    </div>
+
+<br>
+<h4>Seniority level chart</h4>
+
+<div style="height: 600px;">
+<canvas id="seniorityChart"></canvas>
+<script>
+
+    var englishData = [
+        {level: 'junior', count: {{ count_seniority[0] }}},
+        {level: 'middle', count: {{ count_seniority[1] }}},
+        {level: 'senior', count: {{ count_seniority[2] }}}
+    ];
+
+    // Create a chart using Chart.js
+    var ctx = document.getElementById('seniorityChart').getContext('2d');
+    var chart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: englishData.map(data => data.level),
+            datasets: [{
+                label: 'Seniority Level',
+                data: englishData.map(data => data.count),
+                backgroundColor: ["#8cccd4", "#8c98d4", "#bb8cd4"],
+                borderColor: '#ffffff',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    precision: 0
+                }
+            }
+        }
+    });
+</script>
+</div>
+
+<br>
+<h4>Experience level chart</h4>
+
+<div style="height: 600px;">
+<canvas id="experienceChart"></canvas>
+<script>
+function randomColor() {
+      var letters = '0123456789ABCDEF';
+      var color = '#';
+      for (var i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+      }
+      return color;
+    }
+
+    var englishData = {
+      labels: [
+            {% for label in count_experience.keys() %}
+            "{{ label }}"{% if not loop.last %}, {% endif %}
+            {% endfor %}
+         ],
+      datasets: [{        data: [      {% for value in count_experience.values() %}            {{ value }}{% if not loop.last %}, {% endif %}
+            {% endfor %}
+            ],
+      backgroundColor: [      {% for _ in count_experience %}
+            randomColor(){% if not loop.last %}, {% endif %}
+          {% endfor %}  ] }]};
+
+    var englishOptions = {
+      // Chart options
+    };
+
+    var englishChart = new Chart(document.getElementById('experienceChart'), {
+      type: 'line',
+      data: englishData,
+      options: englishOptions
+    });
+</script>
+</div>
+
+<br>
+
+<h4>English level chart</h4>
+
+<div style="height: 600px;">
+<canvas id="englishChart"></canvas>
+<script>
+
+    var englishData = [
+        {level: 'A1', count: {{ count_english[0] }}},
+        {level: 'A2', count: {{ count_english[1] }}},
+        {level: 'B1', count: {{ count_english[2] }}},
+        {level: 'B2', count: {{ count_english[3] }}},
+        {level: 'C1', count: {{ count_english[4] }}},
+        {level: 'C2', count: {{ count_english[5] }}}
+    ];
+
+    // Create a chart using Chart.js
+    var ctx = document.getElementById('englishChart').getContext('2d');
+    var chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: englishData.map(data => data.level),
+            datasets: [{
+                label: 'English Level',
+                data: englishData.map(data => data.count),
+                backgroundColor: '#c79eba',
+                borderColor: '#824a6f',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    precision: 0
+                }
+            }
+        }
+    });
+</script>
+</div>
+
+<br>
+
+<h4>Search table</h4>
+<table id="vacanciesTable">
+    <thead>
+    <tr>
+        <th>Offer type</th>
+        <th>Stack</th>
+        <th>Seniority</th>
+        <th>Experience</th>
+        <th>English</th>
+        <th>Location</th>
+        <th>Rate</th>
+        <th>Date</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for vacancy in vacancies %}
+    <tr>
+        <td>{{ vacancy[1] }}</td>
+        <td>{{ vacancy[2] }}</td>
+        <td>{{ vacancy[3] }}</td>
+        <td>{{ vacancy[4] }}</td>
+        <td>{{ vacancy[5] }}</td>
+        <td>{{ vacancy[6] }}</td>
+        <td>{{ vacancy[7] }}</td>
+        <td>{{ vacancy[10] }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<script>
+    $(document).ready(function () {
+        $('#vacanciesTable').DataTable();
+    });
+</script>
+
+</body>
+</html>
+
+
+

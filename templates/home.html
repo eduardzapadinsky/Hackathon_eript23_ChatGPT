@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Vacancies</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        span {
+            color: #a6a6a6;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+        }
+
+        th {
+            background-color: lightgray;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+    </style>
+</head>
+<body>
+
+<a href="analytics">Analytics</a>
+
+<h1>Vacancies</h1>
+
+{% for message in raw_messages %}
+
+<p><span>Group name:</span> {{ message[1] }}</p>
+<p><span>Date:</span> {{ message[2] }}</p>
+<p><span>Original message:</span><br> {{ message[3] }}</p>
+<p><span>Author nickname:</span> {{ message[4] }}</p>
+<p><span>Parsed message(s):</span> <br>
+{% for vacancy in vacancies %}
+{% if message[0] == vacancy[9] %}
+- {{ vacancy[0] }} <br>
+{% endif %}
+{% endfor %}
+</p>
+
+<hr>
+
+{% endfor %}
+
+<table>
+    <thead>
+    <tr>
+        <th>Offer type</th>
+        <th>Stack</th>
+        <th>Seniority</th>
+        <th>Experience</th>
+        <th>English</th>
+        <th>Location</th>
+        <th>Rate</th>
+        <th>Contacts</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for vacancy in vacancies %}
+    <tr>
+        <td>{{ vacancy[1] }}</td>
+        <td>{{ vacancy[2] }}</td>
+        <td>{{ vacancy[3] }}</td>
+        <td>{{ vacancy[4] }}</td>
+        <td>{{ vacancy[5] }}</td>
+        <td>{{ vacancy[6] }}</td>
+        <td>{{ vacancy[7] }}</td>
+        <td>{{ vacancy[8] }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<hr>
+
+
+</body>
+</html>
